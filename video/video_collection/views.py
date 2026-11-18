@@ -1,6 +1,9 @@
 from django.shortcuts import redirect, render
 from .forms import VideoForm
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.contrib import messages
+from .models import Video
 
 def home(request):
     # Logic for the home view will go here
@@ -16,15 +19,27 @@ def add(request):
         # Process the submitted form data
         new_video_form = VideoForm(request.POST)
         if new_video_form.is_valid():
-            # Save the new video to the database
-            new_video_form.save()
-            messages.success(request, 'Video added successfully!')
+            try:
+                # Save the new video to the database
+                new_video_form.save()
+                return redirect('video_list')
+                # messages.success(request, 'Video added successfully!')
             # TODO: Add a success message or redirect to a success page
-        else: 
-            # If the form is not valid, render the form with error messages
-            messages.error(request, 'Please check the data you entered and try again.')
-            return render(request, 'video_collection/add.html', {'form': new_video_form})
+            except ValidationError:
+                messages.warning(request, 'Invalid YouTube URL')
+            except IntegrityError:
+                messages.warning(request, 'You already added this video')
+        # If the form is not valid, render the form with error messages
+        messages.error(request, 'Please check the data you entered and try again.')
+        return render(request, 'video_collection/add.html', {'form': new_video_form})
     
     # Create a new instance of the VideoForm
     new_video_form = VideoForm()
     return render(request, 'video_collection/add.html', {'form': new_video_form})
+
+def video_list(request):
+    # Logic for displaying the list of videos will go here
+    
+    # Retrieve all videos from the database
+    videos = Video.objects.all()
+    return render(request, 'video_collection/video_list.html', {'videos': videos})
