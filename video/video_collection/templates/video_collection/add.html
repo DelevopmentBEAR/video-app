@@ -1,0 +1,18 @@
+{% extends 'video_collection/base.html' %}
+
+{% block content %}
+
+{% for message in messages%}
+    <li>{{ message }}</li>
+{% endfor %}
+    
+{% comment %} This is a simple form for adding a new video {% endcomment %}
+<form method="POST" action="{% url 'add_video' %}">
+    {% comment %} csrf_token is required for POST requests {% endcomment %}
+    {% csrf_token %}
+    {% comment %} Connects the form to the model {% endcomment %}
+    {{ form }}
+    <button type="submit">Add Video</button>
+</form>
+
+{% endblock %}
