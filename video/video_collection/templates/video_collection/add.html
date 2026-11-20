@@ -6,6 +6,8 @@
     <li>{{ message }}</li>
 {% endfor %}
     
+<h2>Add a Video</h2>
+
 {% comment %} This is a simple form for adding a new video {% endcomment %}
 <form method="POST" action="{% url 'add_video' %}">
     {% comment %} csrf_token is required for POST requests {% endcomment %}

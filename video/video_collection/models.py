@@ -15,10 +15,11 @@ class Video(models.Model):
         
         # Extract the video ID from the URL and store it in the video_id field
         url_components = parse.urlparse(self.url)
-        query_string = parse.parse_qs(url_components.query) # 'v=123456789' -> {'v': ['123456789']}
-        if not query_string:
-            raise ValidationError("Invalid YouTube URL {self.url}")
-        parameters = parse.parse_qs(query_string, strict_parsing=True)
+        # query_string = parse.parse_qs(url_components.query) # 'v=123456789' -> {'v': ['123456789']}
+        # if not query_string:
+        #     raise ValidationError("Invalid YouTube URL {self.url}")
+        # parameters = parse.parse_qs(query_string, strict_parsing=True)
+        parameters = parse.parse_qs(url_components.query)
         v_parameters = parameters.get('v') # return None if no key found, e.g. for a URL like https://www.youtube.com/watch?v=dQw4w9WgXcQ, v_parameters will be ['dQw4w9WgXcQ']
         if not v_parameters: # checking if None or empty list
             raise ValidationError(f"Invalid YouTube URL: missing parameters {self.url}")
